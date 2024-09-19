@@ -11,7 +11,9 @@ module "vpc" {
    cidrvpc  = var.cidrvpc
    azname   = data.aws_availability_zones.available.names
    vpc_name = var.vpc_name
-   tags     = var.tags
+   tags     = merge(var.tags ,{
+    "ext-env" : terraform.workspace
+   })
    
 }
 # EC Module
@@ -25,7 +27,9 @@ resource "random_integer" "subnet" {
 #   max = length(module.vpc.public_subnet_id) - 1
 #   count = length(module.vpc.public_subnet_id) > 0 ? 1 : 0
 # }
-
+# output "public_subnet_id" {
+#   value = aws_subnet.public[*].id
+# }
 module "ec2" {
   depends_on = [
     module.vpc
@@ -43,11 +47,13 @@ module "ec2" {
   #  public_subnet_id            = module.vpc.public_subnet_id[0]
   #public_subnet_id = module.vpc.public_subnet_id[random_integer.subnet.result]
 
-  public_subnet_id = "subnet-0e53f05306d1a5c9f"
+  public_subnet_id = module.vpc.public_subnet_id[random_integer.subnet.result]
   bastion_monitoring          = each.value.bastion_monitoring
   default_tags = merge(
     var.tags,
-    each.value.ext-tags
+    each.value.ext-tags,{
+      "ext-env" : terraform.workspace
+    }
   )
 
 }

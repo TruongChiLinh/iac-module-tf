@@ -50,7 +50,8 @@ module "ec2" {
   #  public_subnet_id            = module.vpc.public_subnet_id[0]
   #public_subnet_id = module.vpc.public_subnet_id[random_integer.subnet.result]
 
-  public_subnet_id = module.vpc.public_subnet_id[random_integer.subnet.result]
+  public_subnet_id = module.vpc.public_subnet_id[random_integer.subnet.resu
+  lt]
   bastion_monitoring          = each.value.bastion_monitoring
   default_tags = merge(
     var.tags,

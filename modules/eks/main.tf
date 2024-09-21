@@ -1,5 +1,4 @@
 locals {
-<<<<<<< HEAD
   region     = data.aws_region.current.name
   account_id = data.aws_caller_identity.current.account_id
 }
@@ -84,8 +83,3 @@ module "eks" {
 #     ]
 #   }
 # }
-=======
-  region = data.aws_region.current.name
-  allocation_id = data.aws_caller_identity.current.account_id
-}
->>>>>>> 9b81f016dc909f7da7f577bc0ca414885f5572a4

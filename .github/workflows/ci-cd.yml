@@ -1,4 +1,4 @@
-name: "Terraform deployment Pratice"
+name: "Terraform CI Pratice"
 on: 
   push:
     branches:

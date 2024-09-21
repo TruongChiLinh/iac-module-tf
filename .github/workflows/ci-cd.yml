@@ -11,7 +11,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 jobs: 
   terraform: 
-    name: "Terraform provision"
+    name: "Terraform provision Pratice"
     runs-on: ubuntu-latest
     steps:
       #check out the terraform repo code test
@@ -40,5 +40,5 @@ jobs:
       - name: "Verify the tfvars "
         run: "terraform plan -var-file=./envs/dev.tfvars"
 
-      # - name: "apply the tfvars "
-      #   run: "terraform apply  -var-file=./envs/dev.tfvars --auto-approve"
+      - name: "apply the tfvars "
+        run: "terraform apply  -var-file=./envs/dev.tfvars --auto-approve"

@@ -1,5 +1,5 @@
 vpc_name = "prod_env"
-cidrvpc  = "20.0.0.0/16"
+cidrvpc  = "10.0.0.0/16"
 vm-config = {
   vm1 = {
     instance_type = "t2.small",

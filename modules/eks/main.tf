@@ -53,33 +53,3 @@ module "eks" {
   tags = var.tags
 }
 
-# resource "kubernetes_config_map" "aws_auth_configmap" {
-
-#   metadata {
-#     name      = "aws-auth"
-#     namespace = "kube-system"
-#   }
-
-#   data = {
-#     mapRoles = <<YAML
-# - "rolearn": "${module.eks.cluster_iam_role_arn}"
-#   "username": "system:node:{{EC2PrivateDNSName}}"
-#   "groups":
-#     - "system:bootstrappers"
-#     - "system:nodes"
-# YAML
-#     mapUsers = <<YAML
-# - "userarn": "arn:aws:iam::${local.account_id}:user/quyennv_user"
-#   "username": "quyennv_user"
-#   "groups":
-#     - "system:masters"
-# YAML
-#   }
-
-
-#   lifecycle {
-#     ignore_changes = [
-#       metadata["annotations"], metadata["labels"],
-#     ]
-#   }
-# }

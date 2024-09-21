@@ -33,7 +33,6 @@ resource "random_integer" "subnet" {
   max = length(module.vpc.public_subnet_id) > 0 ? length(module.vpc.public_subnet_id) - 1 : 0
 }
 
-
 module "ec2" {
   depends_on = [
     module.vpc
@@ -61,6 +60,3 @@ module "ec2" {
   )
 
 }
-
-
-

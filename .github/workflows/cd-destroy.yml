@@ -11,7 +11,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 jobs: 
   terraform: 
-    name: "Terraform provision"
+    name: "Terraform provision-Pratice"
     runs-on: ubuntu-latest
     steps:
       #check out the terraform repo code 

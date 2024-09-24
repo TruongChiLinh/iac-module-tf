@@ -1,3 +1,4 @@
+#run
 current_tfwsp=$(terraform workspace show)
 terraform init
 terraform plan -var-file=envs/${current_tfwsp}.tfvars

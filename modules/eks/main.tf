@@ -69,8 +69,8 @@ module "eks" {
 #     - "system:nodes"
 # YAML
 #     mapUsers = <<YAML
-# - "userarn": "arn:aws:iam::${local.account_id}:user/quyennv_user"
-#   "username": "quyennv_user"
+# - "userarn": "arn:aws:iam::084375555299:user/DE000025"
+#   "username": "DE000025"
 #   "groups":
 #     - "system:masters"
 # YAML

@@ -54,7 +54,7 @@ module "ec2" {
   depends_on = [
     module.vpc
   ]
-  source                      = "./_modules/ec2"
+  source                      = "./modules/ec2"
   for_each                    = var.bastion_definition
   vpc_id                      = module.vpc.vpc_id
   bastion_instance_class      = each.value.bastion_instance_class

@@ -68,6 +68,6 @@ resource "aws_iam_role_policy_attachment" "node-AmazonEC2ContainerRegistryReadOn
 }
 
 resource "aws_iam_instance_profile" "node" {
-  name = "${var.cluster_name}-eks-node-instance-profile"
+  name = "${var.cluster_name}-lct-eks-node-instance-profile"
   role = aws_iam_role.node.name
 }

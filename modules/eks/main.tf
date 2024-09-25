@@ -1,85 +1,53 @@
-locals {
-  region     = data.aws_region.current.name
-  account_id = data.aws_caller_identity.current.account_id
-}
-module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "20.24.1"
-  # manage_aws_auth = false
+resource "aws_eks_cluster" "eks" {
+  name     = var.cluster_name
+  version  = var.cluster_version
+  role_arn = aws_iam_role.cluster.arn
 
-  cluster_name    = var.eks_cluster_name
-  cluster_version = var.eks_cluser_enginee_version
-  vpc_id          = var.vpc_id
-  subnet_ids      = var.private_subnet_ids
+  vpc_config {
+    security_group_ids     = [module.cluster-sg.security_group_id]
+    subnet_ids             = var.intranet_subnet_ids
+    endpoint_public_access = var.endpoint_public_access
+    public_access_cidrs    = var.cluster_endpoint_public_access_cidrs
+  }
 
-  ## https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html
-  # enable_irsa = true
+  enabled_cluster_log_types = var.eks_cw_logging
 
-  self_managed_node_groups = [
+  encryption_config {
+    resources = ["secrets"]
 
-    for private_subnet in var.private_subnet_ids : {
-      launch_template_name = var.eks_cluster_name
-
-      worker_group = {
-        name          = "${var.eks_cluster_name}-eks-worker-ondemand-${private_subnet}"
-        instance_type = var.instance_types
-        subnets       = tolist([private_subnet])
-
-        ami_id = var.ami_id
-
-        max_size            = var.min_size
-        min_size            = var.max_size
-        desired_size        = var.desired_size
-        kubelete_extra_args = "-kubelet-extra-args '--node-labels=kubernetes.io/lifecycle=normal'"
-        public_ip           = false
-
-        # root_volume_type = "gp2"
-        block_device_mappings = {
-          xvda = {
-            device_name = "/dev/xvda"
-            ebs = {
-              delete_on_termination = true
-              encrypted             = true
-              volume_size           = 100
-              volume_type           = "gp2"
-            }
-          }
-        }
-      }
+    provider {
+      key_arn = aws_kms_key.kms.arn
     }
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.cluster-AmazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.cluster-AmazonEKSServicePolicy,
+    aws_kms_key.kms
   ]
-
-
-  tags = var.tags
 }
-
-# resource "kubernetes_config_map" "aws_auth_configmap" {
-
-#   metadata {
-#     name      = "aws-auth"
-#     namespace = "kube-system"
-#   }
-
-#   data = {
-#     mapRoles = <<YAML
-# - "rolearn": "${module.eks.cluster_iam_role_arn}"
-#   "username": "system:node:{{EC2PrivateDNSName}}"
-#   "groups":
-#     - "system:bootstrappers"
-#     - "system:nodes"
-# YAML
-#     mapUsers = <<YAML
-# - "userarn": "arn:aws:iam::084375555299:user/DE000025"
-#   "username": "DE000025"
-#   "groups":
-#     - "system:masters"
-# YAML
-#   }
-
-
-#   lifecycle {
-#     ignore_changes = [
-#       metadata["annotations"], metadata["labels"],
-#     ]
-#   }
-# }
+resource "aws_eks_node_group" "eks-node-group" {
+  cluster_name    = var.cluster_name
+  node_group_name = "${var.cluster_name}-default-node-group"
+  node_role_arn   = aws_iam_role.node.arn
+  subnet_ids      = var.private_subnet_ids
+  # name            = "${var.cluster-name}-worker-node"
+  scaling_config {
+    desired_size = var.min_size
+    max_size     = var.max_size
+    min_size     = var.min_size
+  }
+  instance_types = var.instance_types
+  # Ensure that IAM Role permissions are created before and deleted after EKS Node Group handling.
+  # Otherwise, EKS will not be able to properly delete EC2 Instances and Elastic Network Interfaces.
+  depends_on = [
+    aws_eks_cluster.eks,
+    aws_iam_role_policy_attachment.node-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.node-AmazonEKS_CNI_Policy
+  ]
+  tags = {
+    "Name" = "${var.cluster_name}-default-node-group"
+    key    = "kubernetes.io/cluster/${var.cluster_name}"
+    value  = "owned"
+  }
+}

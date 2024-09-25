@@ -1,6 +1,6 @@
 
 env_prefix                             = "dev"
-vpc_name                               = "dev_env"
+vpc_name                               = "dev_env_linhct"
 cidrvpc                                = "10.0.0.0/16"
 enable_nat_gateway                     = true
 single_nat_gateway                     = true

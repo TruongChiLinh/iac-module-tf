@@ -37,11 +37,11 @@ jobs:
         run: |
           terraform init -backend-config=dev.conf
           
-      - name: "Destroy the resources"
-        run: "terraform destroy --auto-approve"
-      #- name: "Verify the tfvars "
-       # run: "terraform plan -var-file=./envs/dev.tfvars"
+      # - name: "Destroy the resources"
+      #   run: "terraform destroy --auto-approve"
+      - name: "Verify the tfvars "
+        run: "terraform plan -var-file=./envs/dev.tfvars"
 
-      #- name: "apply the tfvars "
-       # run: "terraform apply  -var-file=./envs/dev.tfvars --auto-approve"
+      - name: "apply the tfvars "
+        run: "terraform apply  -var-file=./envs/dev.tfvars --auto-approve"
        

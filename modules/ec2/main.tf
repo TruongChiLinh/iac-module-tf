@@ -1,5 +1,13 @@
+resource "random_integer" "this" {
+  min = 10000000
+  max = 99999999
+}
+locals {
+  identify = random_integer.this.result
+}
+
 resource "aws_key_pair" "bastion_keypair" {
-  key_name   = var.bastion_name
+  key_name   = "${var.bastion_name}-${local.identify}"
   public_key = var.bastion_public_key
   tags       = var.default_tags
 }
@@ -15,8 +23,7 @@ module "ec2_instance" {
   monitoring                  = var.bastion_monitoring
   vpc_security_group_ids      = [aws_security_group.bastion-sg.id]
   subnet_id                   = var.public_subnet_id
-
-  user_data_base64 = var.user_data_base64
+  user_data_base64            = var.user_data_base64
 
   volume_tags = var.default_tags
   tags        = var.default_tags

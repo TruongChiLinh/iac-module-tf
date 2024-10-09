@@ -1,6 +1,6 @@
 
 env_prefix                             = "dev"
-vpc_name                               = "dev_env_linhct"
+vpc_name                               = "dev_env"
 cidrvpc                                = "10.0.0.0/16"
 enable_nat_gateway                     = true
 single_nat_gateway                     = true
@@ -16,15 +16,15 @@ eks_config = {
   cluster_version                                = "1.30"
   min_size                                       = 3
   max_size                                       = 9
-  eks_managed_node_group_defaults_instance_types = ["t2.large", "t2.medium", "t2.xlarge"]
-  instance_type                                  = "t2.medium"
-  instance_types                                 = ["t2.large", "t2.medium", "t2.xlarge"]
+  eks_managed_node_group_defaults_instance_types = ["t2.2xlarge", "t2.large"]
+  instance_type                                  = "t2.2xlarge"
+  instance_types                                 = ["t2.2xlarge", "t2.large"]
   manage_aws_auth_configmap                      = true
   endpoint_public_access                         = true
   aws_auth_users = [
     {
       userarn  = "arn:aws:iam::084375555299:user/DE000025"
-      username = "linhct-dev"
+      username = "DE000025"
       groups   = ["system:masters"]
     },
   ]
@@ -47,7 +47,7 @@ vm-config = {
 bastion_definition = {
   "bastion" = {
    associate_public_ip_address = false
-      bastion_ami                 = "ami-0694f331bbf33fefa"
+      bastion_ami                 = "ami-0b993633c8558c9af"
       bastion_instance_class      = "t3.medium"
       bastion_monitoring          = true
       bastion_name                = "bastion_ssh"

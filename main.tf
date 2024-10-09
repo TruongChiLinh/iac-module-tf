@@ -8,7 +8,7 @@ resource "random_integer" "this" {
   min = 1
   max = 2
 }
-#NetWork Module
+
 module "vpc" {
   source                                 = "./modules/network"
   vpc_cidr                               = var.cidrvpc
@@ -27,7 +27,8 @@ module "vpc" {
     var.default_tags
   )
 }
-#EKS module
+
+#CREATE THE EKS CLUSTER
 module "eks" {
   depends_on = [
     module.vpc
@@ -49,6 +50,9 @@ module "eks" {
   eks_cw_logging                                 = var.eks_config.eks_cw_logging
   default_tags                                   = var.default_tags
 }
+
+
+#CALLING MODULE EC2 TO CREATE THE EC2 INSTANCE 
 
 module "ec2" {
   depends_on = [

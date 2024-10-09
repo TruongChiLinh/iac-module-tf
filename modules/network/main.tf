@@ -1,5 +1,10 @@
+resource "random_integer" "this" {
+  min = 10000000
+  max = 99999999
+}
 locals {
-  azs = slice(data.aws_availability_zones.available.names, 0, 3)
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  identify = random_integer.this.result
 }
 
 module "vpc" {
@@ -24,7 +29,7 @@ module "vpc" {
   create_database_internet_gateway_route = var.create_database_internet_gateway_route
 
   enable_flow_log                       = var.enable_flow_log
-  vpc_flow_log_iam_role_name            = "${var.vpc_name}-follow-log-role"
+  vpc_flow_log_iam_role_name            = "${var.vpc_name}-${local.identify}-follow-log-dev-role"
   vpc_flow_log_iam_role_use_name_prefix = false
   create_flow_log_cloudwatch_iam_role   = var.create_flow_log_cloudwatch_iam_role
   create_flow_log_cloudwatch_log_group  = var.create_flow_log_cloudwatch_log_group
